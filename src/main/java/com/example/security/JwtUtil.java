@@ -11,10 +11,10 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private final String SECRET_KEY = "mysecretkey123456789"; // Learning Purpose only
+    private final String SECRET_KEY = "mysecretkeymysecretkeymysecretkey12"; // Learning Purpose only
     private final long EXPIRATION_TIME = 1000 * 60 * 60 * 24; // 24 Hours
 
-    // 🔹 Generate JWT
+    //  Generate JWT
     public String generateToken(String username) {
 
         Date now = new Date();
@@ -31,18 +31,18 @@ public class JwtUtil {
                 .compact();
     }
 
-    // 🔹 Extract username
+    //  Extract username
     public String extractUsername(String token) {
-        Claims claims = Jwts.parser() // Changed from parserBuilder()
-                .verifyWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes())) // Changed from setSigningKey()
+        Claims claims = Jwts.parser()                                  // parserBuilder() -> for Building while the parser is used for reading
+                .verifyWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes())) // if the token is changed, throws an error
                 .build()
-                .parseSignedClaims(token) // Changed from parseClaimsJws()
-                .getPayload(); // Changed from getBody()
+                .parseSignedClaims(token)                               // turns into a readable object
+                .getPayload();                                           // Extract the payload.[username, expiration time]
 
-        return claims.getSubject();
+        return claims.getSubject();         //Extract username from the token using getSubject
     }
 
-    // 🔹 Validate token
+    //  Validate token
     public boolean validateToken(String token) {
         try {
             Jwts.parser()
