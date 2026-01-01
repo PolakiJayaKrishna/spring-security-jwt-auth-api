@@ -1,103 +1,171 @@
 # Spring Security JWT Authentication API
 
 ## Overview
-This project implements a **secure Spring Boot REST API** using **Spring Security** with **JWT-based authentication utilities**.  
-It demonstrates how backend APIs handle token generation, validation, and identity extraction before requests reach secured endpoints.
+This project implements a **Spring Boot REST API secured with JWT-based authentication** using **Spring Security**.
+It demonstrates how authentication is handled in a **stateless backend system** using a login endpoint, JWT issuance, and a custom authentication filter.
 
-The application follows **industry-standard security practices** and forms the foundation for **stateless authentication using JWT**.
+The application follows **real-world backend security practices** and is designed to be **interview-ready**.
 
 ---
 
 ## Key Features
-- Spring Security–based request protection
-- JWT token generation and validation
-- Username extraction from JWT claims
-- Token expiration handling
-- Centralized JWT utility component
-- Clean separation of security and controller layers
+- Login API that authenticates users and issues JWT
+- Stateless authentication using JSON Web Tokens (JWT)
+- Custom JWT Authentication Filter
+- JWT generation, validation, and username extraction
+- Spring Security integration with AuthenticationManager
+- In-memory user authentication (for learning/demo)
+- Secured endpoints accessible only with valid JWT
 
 ---
 
 ## Technology Stack
 - Java 17
-- Spring Boot
-- Spring Security
-- JJWT (JSON Web Token)
+- Spring Boot 3.x
+- Spring Security 6
+- JJWT (0.12.x)
 - BCrypt Password Encoder
+- Maven
 
 ---
 
-## JWT Details
+## Authentication Flow (JWT)
 
-### Token Generation
-- JWT is generated after successful authentication
-- Token contains:
-  - subject (username)
-  - issued time
-  - expiration time
-- Token is signed using **HMAC-SHA256**
+1. Client sends **username and password** to the login API
+2. Spring Security authenticates credentials using `AuthenticationManager`
+3. Server generates a **signed JWT**
+4. Client sends JWT in every request using:
+```
+
+Authorization: Bearer <JWT>
+
+```
+5. JWT Authentication Filter:
+- Validates the token
+- Extracts the username
+- Loads user details
+- Sets authentication in `SecurityContext`
+6. Secured endpoints are accessible only after successful JWT validation
 
 ---
 
-### Token Validation
-- Incoming JWT tokens are:
-  - verified using a server-side secret key
-  - checked for expiration
-  - rejected if invalid or modified
+## API Endpoints
+
+### Login (Public)
+```
+
+POST /auth/login
+
+````
+
+**Request Body**
+```json
+{
+  "username": "Jay",
+  "password": "Password"
+}
+````
+
+**Response**
+
+```
+<JWT_TOKEN>
+```
 
 ---
 
-### Claim Extraction
-- Username is extracted from the standard JWT `sub` (subject) claim
-- This value is later used for authentication and authorization logic
+### Secured Endpoint (Example)
+
+```
+GET /secure
+Authorization: Bearer <JWT_TOKEN>
+```
 
 ---
 
 ## JWT Utility
 
-JWT-related logic is encapsulated inside a dedicated utility class.
+JWT-related logic is encapsulated in a dedicated utility class.
 
 ```
-
 JwtUtil
 ├── generateToken(username)
 ├── extractUsername(token)
 └── validateToken(token)
-
 ```
 
-This approach ensures reusable, maintainable, and testable JWT handling.
+Responsibilities:
+
+* Token creation with expiry
+* Signature validation (HS256)
+* Username extraction from claims
+
+---
+
+## Security Components
+
+* **AuthenticationManager**
+  Handles credential authentication during login
+
+* **UserDetailsService**
+  Loads user details (in-memory for demo)
+
+* **JWT Authentication Filter**
+  Validates JWT for every request before reaching controllers
+
+* **SecurityContextHolder**
+  Stores authenticated user information per request
 
 ---
 
 ## HTTP Status Codes
-- **200 OK** → Token validated successfully
-- **401 Unauthorized / 403 Forbidden** → Invalid, expired, or missing token
+
+* **200 OK** → Authentication successful
+* **401 Unauthorized** → Missing or invalid JWT
+* **403 Forbidden** → Access denied to secured resource
 
 ---
 
 ## Project Structure
-```
 
-src/main/java
-└── com.example.security
+```
+src/main/java/com/example/security
+├── AuthController.java
+├── JwtAuthenticationFilter.java
 ├── JwtUtil.java
+├── LoginRequest.java
 ├── SecurityConfig.java
-└── HelloController.java
-
 ```
 
 ---
 
-## Future Enhancements
-- Login API to issue JWT tokens
-- JWT authentication filter
-- Role-based authorization
-- Database-backed user authentication
+## Notes
+
+* This project uses **in-memory users** for simplicity
+* JWT secret key length follows RFC standards for HS256
+* No server-side sessions are used (fully stateless)
 
 ---
 
-## Professional Summary
-This project demonstrates practical experience in implementing **JWT-based authentication** using Spring Boot and Spring Security, including token creation, validation, and secure claim handling.
+## Purpose
+
+This project demonstrates **practical backend security skills** using Spring Boot and JWT, including:
+
+* Secure login implementation
+* Token-based authentication
+* Filter-based request security
+* Clean separation of responsibilities
+
+---
+
+## Status
+
+✔ Login API implemented
+✔ JWT utility implemented
+✔ JWT authentication filter implemented
+✔ Stateless security configuration
+⬜ Role-based authorization (future enhancement)
+
 ```
----
+
+
