@@ -1,171 +1,161 @@
-# Spring Security JWT Authentication API
+# Spring Security JWT Authentication API 🔐
 
-## Overview
-This project implements a **Spring Boot REST API secured with JWT-based authentication** using **Spring Security**.
-It demonstrates how authentication is handled in a **stateless backend system** using a login endpoint, JWT issuance, and a custom authentication filter.
+![Java](https://img.shields.io/badge/Java-17-orange)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2-brightgreen)
+![Spring Security](https://img.shields.io/badge/Spring%20Security-6-green)
+![JWT](https://img.shields.io/badge/Auth-JWT-yellow)
+![Build](https://img.shields.io/badge/Build-Maven-blue)
+![Status](https://img.shields.io/badge/Project-Completed-success)
 
-The application follows **real-world backend security practices** and is designed to be **interview-ready**.
-
----
-
-## Key Features
-- Login API that authenticates users and issues JWT
-- Stateless authentication using JSON Web Tokens (JWT)
-- Custom JWT Authentication Filter
-- JWT generation, validation, and username extraction
-- Spring Security integration with AuthenticationManager
-- In-memory user authentication (for learning/demo)
-- Secured endpoints accessible only with valid JWT
+This project demonstrates **JWT-based authentication** using **Spring Boot 3**
+and **Spring Security 6**, focusing on **stateless security** and a
+**custom JWT authentication filter**.
 
 ---
 
-## Technology Stack
-- Java 17
-- Spring Boot 3.x
-- Spring Security 6
-- JJWT (0.12.x)
-- BCrypt Password Encoder
-- Maven
+## 🚀 Features
+
+- JWT-based stateless authentication
+- Login API that issues JWT tokens
+- Custom JWT authentication filter
+- Public and secured REST endpoints
+- Password encryption using BCrypt
+- Modern Spring Security 6 configuration
+- End-to-end testing using Postman
 
 ---
 
-## Authentication Flow (JWT)
+## 🛠️ Tech Stack
 
-1. Client sends **username and password** to the login API
-2. Spring Security authenticates credentials using `AuthenticationManager`
-3. Server generates a **signed JWT**
-4. Client sends JWT in every request using:
-```
-
-Authorization: Bearer <JWT>
-
-```
-5. JWT Authentication Filter:
-- Validates the token
-- Extracts the username
-- Loads user details
-- Sets authentication in `SecurityContext`
-6. Secured endpoints are accessible only after successful JWT validation
+| Technology        | Version     |
+|------------------|-------------|
+| Java             | 17          |
+| Spring Boot      | 3.2.x       |
+| Spring Security  | 6.x         |
+| JWT              | jjwt 0.12.x |
+| Build Tool       | Maven       |
+| API Testing      | Postman     |
 
 ---
 
-## API Endpoints
+## 📂 Project Structure
 
-### Login (Public)
-```
+src/main/java/com/example/security
+├── AuthController
+├── HelloController
+├── JwtAuthenticationFilter
+├── JwtUtil
+├── LoginRequest
+├── SecurityConfig
+└── SpringSecurityJwtAuthApiApplication
 
-POST /auth/login
 
-````
 
-**Request Body**
+---
+
+## 🔐 Authentication Flow
+
+1. User sends credentials to `/auth/login`
+2. Credentials are authenticated using `AuthenticationManager`
+3. JWT token is generated and returned
+4. Client sends JWT in `Authorization: Bearer <token>` header
+5. `JwtAuthenticationFilter` validates the token
+6. `SecurityContext` is populated
+7. Request is allowed to secured endpoints
+
+---
+
+## 🌐 API Endpoints
+
+### 🔓 Public Endpoints
+
+| Method | Endpoint       | Description            |
+|------:|---------------|------------------------|
+| POST  | /auth/login   | Login and get JWT      |
+| GET   | /public       | Public endpoint        |
+
+### 🔒 Secured Endpoints
+
+| Method | Endpoint | Description                 |
+|------:|----------|-----------------------------|
+| GET   | /secure  | Requires valid JWT token    |
+
+---
+
+## 🧪 API Testing (Postman Proof)
+
+### 1️⃣ Login API – Generate JWT (POST /auth/login)
+
 ```json
 {
   "username": "Jay",
   "password": "Password"
 }
-````
 
-**Response**
 
-```
-<JWT_TOKEN>
-```
+2️⃣ Access Secure API WITHOUT Token (GET /secure)
 
----
+Expected Result: 403 Forbidden
 
-### Secured Endpoint (Example)
+3️⃣ Access Secure API WITH Token (GET /secure)
 
-```
-GET /secure
+Header:
+
 Authorization: Bearer <JWT_TOKEN>
-```
-
----
-
-## JWT Utility
-
-JWT-related logic is encapsulated in a dedicated utility class.
-
-```
-JwtUtil
-├── generateToken(username)
-├── extractUsername(token)
-└── validateToken(token)
-```
-
-Responsibilities:
-
-* Token creation with expiry
-* Signature validation (HS256)
-* Username extraction from claims
-
----
-
-## Security Components
-
-* **AuthenticationManager**
-  Handles credential authentication during login
-
-* **UserDetailsService**
-  Loads user details (in-memory for demo)
-
-* **JWT Authentication Filter**
-  Validates JWT for every request before reaching controllers
-
-* **SecurityContextHolder**
-  Stores authenticated user information per request
-
----
-
-## HTTP Status Codes
-
-* **200 OK** → Authentication successful
-* **401 Unauthorized** → Missing or invalid JWT
-* **403 Forbidden** → Access denied to secured resource
-
----
-
-## Project Structure
-
-```
-src/main/java/com/example/security
-├── AuthController.java
-├── JwtAuthenticationFilter.java
-├── JwtUtil.java
-├── LoginRequest.java
-├── SecurityConfig.java
-```
-
----
-
-## Notes
-
-* This project uses **in-memory users** for simplicity
-* JWT secret key length follows RFC standards for HS256
-* No server-side sessions are used (fully stateless)
-
----
-
-## Purpose
-
-This project demonstrates **practical backend security skills** using Spring Boot and JWT, including:
-
-* Secure login implementation
-* Token-based authentication
-* Filter-based request security
-* Clean separation of responsibilities
-
----
-
-## Status
-
-✔ Login API implemented
-✔ JWT utility implemented
-✔ JWT authentication filter implemented
-✔ Stateless security configuration
-⬜ Role-based authorization (future enhancement)
-
-```
 
 
+Expected Result: 200 OK
+
+4️⃣ Access Public API (GET /public)
+
+Expected Result: 200 OK
+
+⚙️ Security Configuration Highlights
+
+CSRF disabled
+
+HTTP Basic authentication disabled
+
+Form Login disabled
+
+Stateless session management (SessionCreationPolicy.STATELESS)
+
+Custom JWT filter registered before UsernamePasswordAuthenticationFilter
+
+🧠 Key Concepts Implemented
+
+Authentication vs Authorization
+
+Stateless authentication using JWT
+
+Spring Security filter chain
+
+Custom OncePerRequestFilter
+
+JWT structure (Header, Payload, Signature)
+
+Circular dependency debugging and resolution
+
+▶️ How to Run the Project
+git clone https://github.com/PolakiJayaKrishna/spring-security-jwt-auth-api.git
+cd spring-security-jwt-auth-api
+mvn spring-boot:run
+
+
+Application runs at:
+
+http://localhost:8080
+
+📌 Project Status
+Feature	Status
+Login API	✅ Done
+JWT Generation	✅ Done
+JWT Validation	✅ Done
+Stateless Security	✅ Done
+Secured Endpoints	✅ Done
+Postman Testing	✅ Done
+👤 Author
+
+Polaki Jaya Krishna
+Final-year B.Tech Student
+Java | Spring Boot | Spring Security | JWT
